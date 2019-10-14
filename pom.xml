@@ -7,5 +7,10 @@
     <groupId>com.example</groupId>
     <artifactId>geo-informer</artifactId>
     <version>1.0</version>
+    <name>Geo Informer</name>
+    <description>
+        The Spring Boot app, which makes interaction with the OpenStreetmap Nominatim API
+        to work with geographic data and store it to the MySQL database
+    </description>
 
 </project>

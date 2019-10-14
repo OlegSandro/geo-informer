@@ -1,12 +1,16 @@
 package com.example.geoinformer.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Quote {
 
     private String type;
-    private Value value;
+    private int id;
+    private String quote;
 
     public Quote() {
     }
@@ -19,19 +23,33 @@ public class Quote {
         this.type = type;
     }
 
-    public Value getValue() {
-        return value;
+    public int getId() {
+        return id;
     }
 
-    public void setValue(Value value) {
-        this.value = value;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getQuote() {
+        return quote;
+    }
+
+    public void setQuote(String quote) {
+        this.quote = quote;
+    }
+
+    @JsonProperty("value")
+    private void unpackNested(Map<String, Object> value) {
+        this.id = (int) value.get("id");
+        this.quote = (String) value.get("quote");
     }
 
     @Override
     public String toString() {
-        return "Quote{" +
-                "type='" + type + '\'' +
-                ", value=" + value +
-                '}';
+        return "Quote{\n" +
+                "type='" + "', \n" +
+                "quote=\"" + quote + "\"" +
+                "}";
     }
 }

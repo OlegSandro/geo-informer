@@ -48,7 +48,8 @@ public class Quote {
     @Override
     public String toString() {
         return "Quote{\n" +
-                "type='" + "', \n" +
+                "type=\"" + type + "\"" +
+                "id=" + ",\n" +
                 "quote=\"" + quote + "\"" +
                 "}";
     }

@@ -3,24 +3,38 @@ package com.example.geoinformer.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.*;
 import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Entity
+@Table(name = "position")
 public class Position {
 
-    private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @JsonProperty("lat")
     private float latitude;
+
     @JsonProperty("lon")
     private float longitude;
+
     private String country; // 14 symbols
+
     @JsonProperty("type")
     private String type; // 22 symbols
+
     @JsonProperty("display_name")
     private String name;
+
     @JsonProperty("osm_id")
+    @Column(name = "osm_id")
     private Long osmId;
+
     @JsonProperty("osm_type")
+    @Column(name = "osm_type")
     private Character osmType;
 
     public Position() {

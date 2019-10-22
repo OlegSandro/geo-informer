@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
+
 @RestController
 public class PositionController {
 
@@ -49,6 +52,7 @@ public class PositionController {
             lon.compareTo(180F) <= 0
         ) {
             RestTemplate restTemplate = new RestTemplate();
+            // TODO Replace email to header changes
             String url = String.format("https://nominatim.openstreetmap.org/reverse?" +
                     "email=okuziura@gmail.com&format=jsonv2&accept-language=ru&zoom=18&lat=%f&lon=%f", lat, lon);
             logger.info("Forward to " + url);
@@ -70,13 +74,28 @@ public class PositionController {
             logger.info(FAILED);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204
         }
+        logger.info("Remote RESTful webservice response:");
         logger.info(position.toString());
         logger.info(SUCCESS);
-        positionRepository.save(position);
-        logger.info("Position was added to DB");
+        logger.info("Local DB response:");
+        try {
+            Position positionNew = positionRepository.save(position);
+            position = positionNew;
+        } catch (Exception e) {
+            // TODO Add check is the exception causes because position already exists or unforeseen situation
+            logger.warn(e.getClass().getName());
+            e.printStackTrace();
+        } finally {
+            logger.info(position.toString());
+            logger.info(SUCCESS);
+        }
         return new ResponseEntity<>(position, HttpStatus.OK); // 200
     }
 
+    /**
+     * Метод, служащий для проверки работы веб-сервиса
+     * @return число – количество сохраненных мест в базе данных
+     */
     @GetMapping("/count")
     public long count() {
         return positionRepository.count();

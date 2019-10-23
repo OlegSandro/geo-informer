@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.List;
 
 @RestController
 public class PositionController {
@@ -90,6 +92,22 @@ public class PositionController {
             logger.info(SUCCESS);
         }
         return new ResponseEntity<>(position, HttpStatus.OK); // 200
+    }
+
+    @GetMapping("/pos-by-country")
+    public ResponseEntity<List<Position>> getPositionsByCountry(@RequestParam String country) {
+        List<Position> positions = positionRepository.findByCountryOrderByCountryAsc(country);
+        if (positions == null) {
+            logger.warn(NULL);
+            logger.info(FAILED);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204
+
+        }
+        for (Position position : positions) {
+            logger.info(position.toString());
+        }
+        logger.info(SUCCESS);
+        return new ResponseEntity<>(positions, HttpStatus.OK); // 200
     }
 
     /**

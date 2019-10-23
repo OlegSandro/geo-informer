@@ -4,6 +4,10 @@ import com.example.geoinformer.entity.Position;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface PositionRepository extends CrudRepository<Position, Long> {
+
+    List<Position> findByCountryOrderByCountryAsc(String country);
 }

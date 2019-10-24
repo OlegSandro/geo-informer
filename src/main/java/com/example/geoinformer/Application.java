@@ -8,7 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@SpringBootApplication(scanBasePackages = "com.example.geoinformer.controller")
+@SpringBootApplication(scanBasePackages = {"com.example.geoinformer.controller", "com.example.geoinformer.service"})
 @EnableJpaRepositories(basePackages = "com.example.geoinformer.repository")
 @EnableTransactionManagement
 @EntityScan(basePackages = "com.example.geoinformer.entity")

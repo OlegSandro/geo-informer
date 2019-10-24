@@ -112,7 +112,7 @@ public class PositionController {
 
     @GetMapping("/pos-by-country")
     public ResponseEntity<List<Position>> getPositionsByCountry(@RequestParam String country) {
-        List<Position> positions = positionService.getPositionsByCountry("АНДР");
+        List<Position> positions = positionService.getPositionsByCountry(country);
         if (positions == null) {
             logger.warn(NULL);
             logger.info(FAILED);

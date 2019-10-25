@@ -2,9 +2,6 @@ package com.example.geoinformer.controller;
 
 import com.example.geoinformer.entity.Position;
 import com.example.geoinformer.service.PositionService;
-import com.example.geoinformer.service.PositionServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,58 +14,60 @@ import java.util.List;
 @RestController
 public class PositionController {
 
-    private final String SUCCESS = "Success!";
-    private final String FAILED = "Failed!";
-    private final String NULL = "Null!";
-
     @Autowired
     private PositionService positionService;
-    //private PositionRepository positionRepository;
-    private static final Logger logger = LoggerFactory.getLogger(PositionController.class.getName());
 
     /**
-     * Метод, служащий для проверки работы веб-сервиса
-     * @return объект – представление с текстом "Hello world"
+     * Метод, возвращающий главную страницу веб-сервиса. Добавлен для проверки
+     * работы веб-сервиса.
+     *
+     * @return представление с текстом, являющим собой краткую информацию
+     *         о текущем веб-сервисе
      */
-    /*@GetMapping("/")
+    @GetMapping("/")
     public String index() {
-        String content = "Hello world";
-        logger.info(content);
+        String content = "The Spring Boot app, which makes interaction with the OpenStreetMap Nominatim API " +
+                "to work with geographic data and store it to the MySQL database.";
         return content;
-    }*/
+    }
 
     /**
-     * Метод, возвращающий по координатам в формате WGS 84 все данные о найденном месте
-     * @param lat число – значение широты в градусах (в пределах от -90 до 90)
-     * @param lon число – значение долготы в градусах (в пределах от -180 до 180)
-     * @return объект – ответ от контроллера, включающий объект сущности Position и статус HTTP-запроса
+     * Метод, который получает по координатам в формате WGS 84 объект
+     * найденного места в формате JSON, сохраняет его в БД и возвращает из БД
+     * сущность в формате JSON, соответствующую этому месту.
+     *
+     * @param lat широта, указанная в градусах (в пределах от -90 до 90)
+     * @param lon долгота, указанная в градусах (в пределах от -180 до 180)
+     * @return ответ от сервера, включающий сущность места в формате JSON,
+     *         взятую из БД и соответствующую указанным в параметрах
+     *         широте <tt>lat</tt> и долготе <tt>lon</tt>
      */
-    /*@GetMapping("/pos-by-coords")
-    public ResponseEntity<Position> getPositionByCoords(@RequestParam Float lat, @RequestParam Float lon) {
-        if (
-            lat.compareTo(-90F) >= 0 &&
-            lat.compareTo(90F) <= 0 &&
-            lon.compareTo(-180F) >= 0 &&
-            lon.compareTo(180F) <= 0
-        ) {
-            RestTemplate restTemplate = new RestTemplate();
-            // TODO Replace email to header changes
-            String url = String.format("https://nominatim.openstreetmap.org/reverse?" +
-                    "email=okuziura@gmail.com&format=jsonv2&accept-language=ru&zoom=18&lat=%f&lon=%f", lat, lon);
-            logger.info("Forward to " + url);
-            Position position = restTemplate.getForObject(url, Position.class);
-            return returnResponse(position);
+    @GetMapping("/pos-by-coords")
+    public ResponseEntity<Position> getPositionByCoords(@RequestParam float lat, @RequestParam float lon) {
+        ResponseEntity<Position> responseEntity = positionService.receivePosition(lat, lon);
+        if(responseEntity.getStatusCode().equals(HttpStatus.OK)) {
+            return positionService.savePosition(responseEntity.getBody());
         } else {
-            return returnResponse(null);
+            return responseEntity;
         }
-    }*/
+    }
+
+/*    @GetMapping("/pos-by-country")
+    public ResponseEntity<List<Position>> getPositionsByCountry(@RequestParam String country) {
+        List<Position> positions = positionService.findPositionsByCountry(country);
+        if (positions != null) {
+            return new ResponseEntity<>(positions, HttpStatus.OK); // 200
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // 500
+        }
+    }
 
     /**
      * Метод, позволяющий в зависимости от обнаружения места возвратить объект сущности Position и статус HTTP-запроса
      * @param position объект – место на карте
      * @return объект – ответ от контроллера, включающий объект сущности Position и статус HTTP-запроса
      */
-    /*private ResponseEntity<Position> returnResponse(Position position) {
+  /*  private ResponseEntity<Position> returnResponse(Position position) {
         if (position == null) {
             logger.warn(NULL);
             logger.info(FAILED);
@@ -110,21 +109,6 @@ public class PositionController {
     }
 */
 
-    @GetMapping("/pos-by-country")
-    public ResponseEntity<List<Position>> getPositionsByCountry(@RequestParam String country) {
-        List<Position> positions = positionService.getPositionsByCountry(country);
-        if (positions == null) {
-            logger.warn(NULL);
-            logger.info(FAILED);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204
-
-        }
-        for (Position position : positions) {
-            logger.info(position.toString());
-        }
-        logger.info(SUCCESS);
-        return new ResponseEntity<>(positions, HttpStatus.OK); // 200
-    }
 
     /*@GetMapping("/pos-by-name")
     public ResponseEntity<Position> getPositionByName(@RequestParam String name) {
@@ -138,14 +122,5 @@ public class PositionController {
         logger.info(position.toString());
         logger.info(SUCCESS);
         return new ResponseEntity<>(position, HttpStatus.OK); // 200
-    }*/
-
-    /**
-     * Метод, служащий для проверки работы веб-сервиса
-     * @return число – количество сохраненных мест в базе данных
-     */
-    /*@GetMapping("/count")
-    public long count() {
-        return positionRepository.count();
     }*/
 }

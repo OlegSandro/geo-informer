@@ -2,7 +2,6 @@ package com.example.geoinformer.controller;
 
 import com.example.geoinformer.entity.Position;
 import com.example.geoinformer.service.PositionService;
-import com.example.geoinformer.service.PositionServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,25 +16,27 @@ import java.util.List;
 @RestController
 public class PositionController {
 
-    private final String SUCCESS = "Success!";
-    private final String FAILED = "Failed!";
-    private final String NULL = "Null!";
+    private static final String SUCCESS = "Success!";
+    private static final String FAILED = "Failed!";
+    private static final String NULL = "Null!";
+    private static final String EMPTY = "Empty!";
+    private static final String BAD_INPUT = "Bad input!";
 
     @Autowired
     private PositionService positionService;
-    //private PositionRepository positionRepository;
+
     private static final Logger logger = LoggerFactory.getLogger(PositionController.class.getName());
 
     /**
      * Метод, служащий для проверки работы веб-сервиса
      * @return объект – представление с текстом "Hello world"
      */
-    /*@GetMapping("/")
+    @GetMapping("/")
     public String index() {
         String content = "Hello world";
         logger.info(content);
         return content;
-    }*/
+    }
 
     /**
      * Метод, возвращающий по координатам в формате WGS 84 все данные о найденном месте
@@ -43,32 +44,23 @@ public class PositionController {
      * @param lon число – значение долготы в градусах (в пределах от -180 до 180)
      * @return объект – ответ от контроллера, включающий объект сущности Position и статус HTTP-запроса
      */
-    /*@GetMapping("/pos-by-coords")
-    public ResponseEntity<Position> getPositionByCoords(@RequestParam Float lat, @RequestParam Float lon) {
-        if (
-            lat.compareTo(-90F) >= 0 &&
-            lat.compareTo(90F) <= 0 &&
-            lon.compareTo(-180F) >= 0 &&
-            lon.compareTo(180F) <= 0
-        ) {
-            RestTemplate restTemplate = new RestTemplate();
-            // TODO Replace email to header changes
-            String url = String.format("https://nominatim.openstreetmap.org/reverse?" +
-                    "email=okuziura@gmail.com&format=jsonv2&accept-language=ru&zoom=18&lat=%f&lon=%f", lat, lon);
-            logger.info("Forward to " + url);
-            Position position = restTemplate.getForObject(url, Position.class);
-            return returnResponse(position);
+    @GetMapping("/pos-by-coords")
+    public ResponseEntity<Position> getPositionByCoords(@RequestParam float lat, @RequestParam float lon) {
+        Position position = positionService.receivePosition(lat, lon);
+        position = positionService.savePosition(position);
+        if (position != null) {
+            return new ResponseEntity<>(position, HttpStatus.OK); // 200
         } else {
-            return returnResponse(null);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // 500
         }
-    }*/
-
+    }
+/*
     /**
      * Метод, позволяющий в зависимости от обнаружения места возвратить объект сущности Position и статус HTTP-запроса
      * @param position объект – место на карте
      * @return объект – ответ от контроллера, включающий объект сущности Position и статус HTTP-запроса
      */
-    /*private ResponseEntity<Position> returnResponse(Position position) {
+  /*  private ResponseEntity<Position> returnResponse(Position position) {
         if (position == null) {
             logger.warn(NULL);
             logger.info(FAILED);
@@ -109,18 +101,17 @@ public class PositionController {
         return new ResponseEntity<>(positions, HttpStatus.OK); // 200
     }
 */
-
     @GetMapping("/pos-by-country")
     public ResponseEntity<List<Position>> getPositionsByCountry(@RequestParam String country) {
-        List<Position> positions = positionService.getPositionsByCountry(country);
-        if (positions == null) {
+        List<Position> positions = positionService.findPositionsByCountry(country);
+        if(positions == null){
             logger.warn(NULL);
             logger.info(FAILED);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // 500
+        } else if (positions.isEmpty()) {
+            logger.warn(EMPTY);
+            logger.info(SUCCESS);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204
-
-        }
-        for (Position position : positions) {
-            logger.info(position.toString());
         }
         logger.info(SUCCESS);
         return new ResponseEntity<>(positions, HttpStatus.OK); // 200
@@ -138,14 +129,5 @@ public class PositionController {
         logger.info(position.toString());
         logger.info(SUCCESS);
         return new ResponseEntity<>(position, HttpStatus.OK); // 200
-    }*/
-
-    /**
-     * Метод, служащий для проверки работы веб-сервиса
-     * @return число – количество сохраненных мест в базе данных
-     */
-    /*@GetMapping("/count")
-    public long count() {
-        return positionRepository.count();
     }*/
 }

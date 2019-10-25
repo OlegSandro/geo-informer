@@ -6,5 +6,15 @@ import java.util.List;
 
 public interface PositionService {
 
-    List<Position> getPositionsByCountry(String country);
+    public Position receivePosition(float latitude, float longitude);
+
+    public Position savePosition(Position position);
+
+    public List<Position> findPositionsByCountry(String country);
+
+    public Position findPositionByName(String name);
+
+    public Position findPositionByCoords(float latitude, float longitude);
+
+    public void updateAllPositions();
 }

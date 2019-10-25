@@ -21,7 +21,7 @@ public class Position {
     @JsonProperty("lon")
     private float longitude;
 
-    private String country; // 14 symbols
+    private String country; // 2 symbols
 
     @JsonProperty("type")
     private String type; // 22 symbols
@@ -116,7 +116,7 @@ public class Position {
 
     @JsonProperty("address")
     private void unpackCountry(Map<String, Object> address) {
-        this.country = (String) address.get("country");
+        this.country = (String) address.get("country_code");
     }
 
     @Override

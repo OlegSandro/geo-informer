@@ -109,7 +109,6 @@ public class PositionController {
     }
 */
 
-
     /*@GetMapping("/pos-by-name")
     public ResponseEntity<Position> getPositionByName(@RequestParam String name) {
         Position position = positionRepository.findPositionByName(name);

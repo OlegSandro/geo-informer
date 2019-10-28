@@ -2,8 +2,8 @@ package com.example.geoinformer.utility;
 
 public enum LoggerMessage {
 
-    STATUS_SUCCESS("Success!"),
-    STATUS_FAILED("Failed!"),
+    STATUS_SUCCESS("success!"),
+    STATUS_FAILED("failed!"),
     REPLY_NULL("null!"),
     REPLY_EMPTY("empty!"),
     REPLY_BAD_INPUT("bad input!"),

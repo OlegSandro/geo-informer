@@ -1,7 +1,10 @@
 package com.example.geoinformer.entity;
 
+import com.example.geoinformer.utility.View;
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
 import java.util.Map;
@@ -32,6 +35,7 @@ public class Position {
     private float longitude;
 
     @Column(length = 2)
+    @JsonView(View.Position.class)
     private String country;
 
     @JsonProperty("type")
@@ -40,6 +44,7 @@ public class Position {
 
     @JsonProperty("display_name")
     @Column(length = 128)
+    @JsonView(View.Position.class)
     private String name;
 
     public Position() {
@@ -122,6 +127,13 @@ public class Position {
     @JsonProperty("address")
     private void unpackCountry(Map<String, Object> address) {
         this.country = (String) address.get("country_code");
+    }
+
+    public String overview() {
+        return "{\n" +
+                "country=\"" + country + "\",\n" +
+                "name=\"" + name + "\"\n" +
+                "}";
     }
 
     @Override

@@ -11,8 +11,8 @@ public interface PositionService {
 
     public ResponseEntity<Position> savePosition(Position position);
 
-//    public List<Position> findPositionsByCountry(String country);
-//
+    public ResponseEntity<List<Position>> findPositionsByCountry(String country);
+
 //    public Position findPositionByName(String name);
 //
 //    public Position findPositionByCoords(float latitude, float longitude);

@@ -2,6 +2,8 @@ package com.example.geoinformer.controller;
 
 import com.example.geoinformer.entity.Position;
 import com.example.geoinformer.service.PositionService;
+import com.example.geoinformer.utility.View;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,16 +54,19 @@ public class PositionController {
         }
     }
 
-/*    @GetMapping("/pos-by-country")
+    /**
+     * Метод, который возвращает все найденные в БД места из указанной страны.
+     *
+     * @param country название страны
+     * @return список всех мест (только общая информация), найденных в БД и
+     *         относящихся к указанной в параметре <tt>country</tt> стране
+     */
+    @JsonView(View.Position.class)
+    @GetMapping("/pos-by-country")
     public ResponseEntity<List<Position>> getPositionsByCountry(@RequestParam String country) {
-        List<Position> positions = positionService.findPositionsByCountry(country);
-        if (positions != null) {
-            return new ResponseEntity<>(positions, HttpStatus.OK); // 200
-        } else {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // 500
-        }
+        return positionService.findPositionsByCountry(country);
     }
-
+/*
     /**
      * Метод, позволяющий в зависимости от обнаружения места возвратить объект сущности Position и статус HTTP-запроса
      * @param position объект – место на карте

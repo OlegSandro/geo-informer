@@ -11,7 +11,7 @@ public interface PositionRepository extends CrudRepository<Position, Long> {
 
     Position findByLatitudeAndLongitude(float latitude, float longitude);
 
-    List<Position> findByCountryOrderByCountryAscNameAsc(String country);
+    List<Position> findByCountryOrderByNameAsc(String country);
 
     Position findFirstByNameOrderById(String name);
 

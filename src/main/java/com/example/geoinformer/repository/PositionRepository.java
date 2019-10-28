@@ -1,6 +1,7 @@
 package com.example.geoinformer.repository;
 
 import com.example.geoinformer.entity.Position;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +14,9 @@ public interface PositionRepository extends CrudRepository<Position, Long> {
 
     List<Position> findByCountryOrderByNameAsc(String country);
 
-    Position findFirstByNameOrderById(String name);
+    Position findFirstByNameContainingOrderByName(String name);
+
+    Position findFirstByNameIsNull();
 
     List<Position> findAll();
 }

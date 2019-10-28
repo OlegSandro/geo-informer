@@ -13,8 +13,8 @@ public interface PositionService {
 
     public ResponseEntity<List<Position>> findPositionsByCountry(String country);
 
-//    public Position findPositionByName(String name);
-//
+    public ResponseEntity<Position> findPositionByName(String name);
+
 //    public Position findPositionByCoords(float latitude, float longitude);
 //
 //    public void updateAllPositions();

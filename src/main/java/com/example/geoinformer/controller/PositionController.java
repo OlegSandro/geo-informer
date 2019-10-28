@@ -55,76 +55,28 @@ public class PositionController {
     }
 
     /**
-     * Метод, который возвращает все найденные в БД места из указанной страны.
+     * Метод, возвращающий все найденные в БД места из указанной страны.
+     * При этом место включает лишь общую информацию о себе.
      *
      * @param country название страны
-     * @return список всех мест (только общая информация), найденных в БД и
-     *         относящихся к указанной в параметре <tt>country</tt> стране
+     * @return список всех мест из указанной в параметре <tt>country</tt> страны,
+     *         найденных в БД
      */
     @JsonView(View.Position.class)
     @GetMapping("/pos-by-country")
     public ResponseEntity<List<Position>> getPositionsByCountry(@RequestParam String country) {
         return positionService.findPositionsByCountry(country);
     }
-/*
+
     /**
-     * Метод, позволяющий в зависимости от обнаружения места возвратить объект сущности Position и статус HTTP-запроса
-     * @param position объект – место на карте
-     * @return объект – ответ от контроллера, включающий объект сущности Position и статус HTTP-запроса
+     * Метод, возвращающий найденное в БД место по указанному названию.
+     *
+     * @param name текст, который содержится в названии места
+     * @return найденное в БД место, которое имеет в своем названии указанный
+     *         в параметре <tt>name</tt> текст
      */
-  /*  private ResponseEntity<Position> returnResponse(Position position) {
-        if (position == null) {
-            logger.warn(NULL);
-            logger.info(FAILED);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204
-        }
-        logger.info("Remote RESTful webservice response:");
-        logger.info(position.toString());
-        logger.info(SUCCESS);
-        logger.info("Local DB response:");
-        try {
-            Position positionNew = positionRepository.save(position);
-            position = positionNew;
-        } catch (Exception e) {
-            // TODO Add check is the exception causes because position already exists or unforeseen situation
-            logger.warn(e.getClass().getName());
-            e.printStackTrace();
-        } finally {
-            logger.info(position.toString());
-            logger.info(SUCCESS);
-        }
-        return new ResponseEntity<>(position, HttpStatus.OK); // 200
-    }*/
-
-/*
-    @GetMapping("/pos-by-country")
-    public ResponseEntity<List<Position>> getPositionsByCountry(@RequestParam String country) {
-        List<Position> positions = positionRepository.findByCountryOrderByCountryAsc(country);
-        if (positions == null) {
-            logger.warn(NULL);
-            logger.info(FAILED);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204
-
-        }
-        for (Position position : positions) {
-            logger.info(position.toString());
-        }
-        logger.info(SUCCESS);
-        return new ResponseEntity<>(positions, HttpStatus.OK); // 200
-    }
-*/
-
-    /*@GetMapping("/pos-by-name")
+    @GetMapping("/pos-by-name")
     public ResponseEntity<Position> getPositionByName(@RequestParam String name) {
-        Position position = positionRepository.findPositionByName(name);
-        if (position == null) {
-            logger.warn(NULL);
-            logger.info(FAILED);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204
-
-        }
-        logger.info(position.toString());
-        logger.info(SUCCESS);
-        return new ResponseEntity<>(position, HttpStatus.OK); // 200
-    }*/
+        return positionService.findPositionByName(name);
+    }
 }

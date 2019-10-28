@@ -115,11 +115,12 @@ public class PositionServiceImpl implements PositionService {
     }
 
     /**
-     * Метод, который возвращает все найденные в БД места из указанной страны.
+     * Метод, возвращающий все найденные в БД места из указанной страны.
+     * При этом место включает лишь общую информацию о себе.
      *
      * @param country название страны
-     * @return список всех мест, найденных в БД и относящихся к указанной
-     *         в параметре <tt>country</tt> стране
+     * @return список всех мест из указанной в параметре <tt>country</tt> страны,
+     *         найденных в БД
      */
     @Override
     public ResponseEntity<List<Position>> findPositionsByCountry(String country) {
@@ -159,11 +160,54 @@ public class PositionServiceImpl implements PositionService {
         }
     }
 
-//    @Override
-//    public Position findPositionByName(String name) {
-//        return positionRepository.findFirstByNameOrderById(name);
-//    }
-//
+    /**
+     * Метод, возвращающий найденное в БД место по указанному названию.
+     *
+     * @param name текст, который содержится в названии места
+     * @return найденное в БД место, которое имеет в своем названии указанный
+     *         в параметре <tt>name</tt> текст
+     */
+    @Override
+    public ResponseEntity<Position> findPositionByName(String name) {
+        Position position;
+        if (name != null) {
+            if (!name.equals("NULL")) {
+                position = positionRepository.findFirstByNameContainingOrderByName(name);
+                if(position != null) {
+                    logger.info(LoggerMessage.SOURCE_DATABASE.getText() + "\n" + position.toString());
+                    logger.info(LoggerMessage.SOURCE_DATABASE.getText() + LoggerMessage.STATUS_SUCCESS.getText());
+                    return new ResponseEntity<>(position, HttpStatus.OK); // 200
+                } else {
+                    logger.info(LoggerMessage.SOURCE_DATABASE.getText() + LoggerMessage.REPLY_NULL.getText());
+                    logger.info(LoggerMessage.SOURCE_DATABASE.getText() + LoggerMessage.STATUS_SUCCESS.getText());
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204
+                }
+            } else {
+                position = positionRepository.findFirstByNameIsNull();
+                if(position != null) {
+                    logger.info(LoggerMessage.SOURCE_DATABASE.getText() + "\n" + position.toString());
+                    logger.info(LoggerMessage.SOURCE_DATABASE.getText() + LoggerMessage.STATUS_SUCCESS.getText());
+                    return new ResponseEntity<>(position, HttpStatus.OK); // 200
+                } else {
+                    logger.info(LoggerMessage.SOURCE_DATABASE.getText() + LoggerMessage.REPLY_NULL.getText());
+                    logger.info(LoggerMessage.SOURCE_DATABASE.getText() + LoggerMessage.STATUS_SUCCESS.getText());
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204
+                }
+            }
+        } else {
+            position = positionRepository.findFirstByNameIsNull();
+            if(position != null) {
+                logger.info(LoggerMessage.SOURCE_DATABASE.getText() + "\n" + position.toString());
+                logger.info(LoggerMessage.SOURCE_DATABASE.getText() + LoggerMessage.STATUS_SUCCESS.getText());
+                return new ResponseEntity<>(position, HttpStatus.OK); // 200
+            } else {
+                logger.info(LoggerMessage.SOURCE_DATABASE.getText() + LoggerMessage.REPLY_NULL.getText());
+                logger.info(LoggerMessage.SOURCE_DATABASE.getText() + LoggerMessage.STATUS_SUCCESS.getText());
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204
+            }
+        }
+    }
+
 //    @Override
 //    public Position findPositionByCoords(float latitude, float longitude) {
 //        return positionRepository.findByLatitudeAndLongitude(latitude, longitude);

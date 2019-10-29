@@ -208,32 +208,44 @@ public class PositionServiceImpl implements PositionService {
         }
     }
 
-//    @Override
-//    public Position findPositionByCoords(float latitude, float longitude) {
-//        return positionRepository.findByLatitudeAndLongitude(latitude, longitude);
-//    }
-//
-//    @Override
-//    public void updateAllPositions() {
-//        List<Position> positions = positionRepository.findAll();
-//        Position positionNew = null;
-//        String url = null;
-//        float latitude;
-//        float longitude;
-//        RestTemplate restTemplate = new RestTemplate();
-//        for (Position position : positions) {
-//            latitude = position.getLatitude();
-//            longitude = position.getLongitude();
-//            url = String.format(URL_FORMAT, latitude, longitude);
-//            positionNew = restTemplate.getForObject(url, Position.class);
-//            position.setLatitude(positionNew.getLatitude());
-//            position.setLongitude(positionNew.getLongitude());
-//            position.setCountry(positionNew.getCountry());
-//            position.setType(positionNew.getType());
-//            position.setName(positionNew.getName());
-//            position.setOsmId(positionNew.getOsmId());
-//            position.setOsmType(positionNew.getOsmType());
-//            positionRepository.save(position);
-//        }
-//    }
+    /**
+     * Метод, обновляющий информацию по всем местам в БД
+     *
+     * @return состояние HTTP
+     */
+    @Override
+    public ResponseEntity refreshAllPositions() {
+        List<Position> positions = positionRepository.findAll();
+        if (positions != null) {
+            if (!positions.isEmpty()) {
+                ResponseEntity<Position> responseEntity;
+                logger.info(LoggerMessage.SOURCE_DATABASE.getText());
+                for (Position position : positions) {
+                    logger.info(position.toString());
+                    responseEntity = receivePosition(position.getLatitude(), position.getLongitude());
+                    if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
+                        position.setLatitude(responseEntity.getBody().getLatitude());
+                        position.setLongitude(responseEntity.getBody().getLongitude());
+                        position.setOsmType(responseEntity.getBody().getOsmType());
+                        position.setOsmId(responseEntity.getBody().getOsmId());
+                        position.setCountry(responseEntity.getBody().getCountry());
+                        position.setType(responseEntity.getBody().getType());
+                        position.setName(responseEntity.getBody().getName());
+                        positionRepository.save(position);
+                    }
+                    logger.info(position.toString());
+                }
+                logger.info(LoggerMessage.SOURCE_DATABASE.getText() + LoggerMessage.STATUS_SUCCESS);
+                return new ResponseEntity(HttpStatus.OK);
+            } else {
+                logger.info(LoggerMessage.SOURCE_DATABASE.getText() + LoggerMessage.REPLY_EMPTY.getText());
+                logger.info(LoggerMessage.SOURCE_DATABASE.getText() + LoggerMessage.STATUS_SUCCESS);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204
+            }
+        } else {
+            logger.error(LoggerMessage.SOURCE_DATABASE.getText() + LoggerMessage.REPLY_NULL.getText());
+            logger.info(LoggerMessage.SOURCE_DATABASE.getText() + LoggerMessage.STATUS_FAILED);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // 500
+        }
+    }
 }

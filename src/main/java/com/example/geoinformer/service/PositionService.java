@@ -15,7 +15,5 @@ public interface PositionService {
 
     public ResponseEntity<Position> findPositionByName(String name);
 
-//    public Position findPositionByCoords(float latitude, float longitude);
-//
-//    public void updateAllPositions();
+    public ResponseEntity refreshAllPositions();
 }

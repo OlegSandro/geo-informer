@@ -26,13 +26,13 @@ public class PositionController {
      * работы веб-сервиса.
      *
      * @return представление с текстом, являющим собой краткую информацию
-     *         о текущем веб-сервисе
+     * о текущем веб-сервисе
      */
     @GetMapping("/")
     public String index() {
-        String content = "The Spring Boot app, which makes interaction with the OpenStreetMap Nominatim API " +
-                "to work with geographic data and store it to the MySQL database.";
-        return content;
+        return "The Spring Boot app, which makes interaction with the OpenStreetMap Nominatim API " +
+                "to work with geographic data and store it to the MySQL database, select it by country or " +
+                "by name and regularly update its information.";
     }
 
     /**
@@ -49,7 +49,7 @@ public class PositionController {
     @GetMapping("/pos-by-coords")
     public ResponseEntity<Position> getPositionByCoords(@RequestParam float lat, @RequestParam float lon) {
         ResponseEntity<Position> responseEntity = positionService.receivePosition(lat, lon);
-        if(responseEntity.getStatusCode().equals(HttpStatus.OK)) {
+        if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
             return positionService.savePosition(responseEntity.getBody());
         } else {
             return responseEntity;
@@ -89,7 +89,7 @@ public class PositionController {
      */
     @Scheduled(cron = "0 0 0 * * ?", zone = "Europe/Minsk")
     @PostMapping("/pos-update")
-    public ResponseEntity<?> refreshPositions() {
+    public ResponseEntity refreshPositions() {
         return positionService.refreshAllPositions();
     }
 }

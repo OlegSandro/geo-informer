@@ -1,14 +1,15 @@
 package com.example.geoinformer.entity;
 
 import com.example.geoinformer.utility.View;
-import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Map;
 
+@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "position")
@@ -47,71 +48,8 @@ public class Position {
     @JsonView(View.Position.class)
     private String name;
 
-    public Position() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Character getOsmType() {
-        return osmType;
-    }
-
     public void setOsmType(Character osmType) {
         this.osmType = osmType;
-    }
-
-    public Long getOsmId() {
-        return osmId;
-    }
-
-    public void setOsmId(Long osmId) {
-        this.osmId = osmId;
-    }
-
-    public float getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(float latitude) {
-        this.latitude = latitude;
-    }
-
-    public float getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(float longitude) {
-        this.longitude = longitude;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void setOsmType(String osmType) {

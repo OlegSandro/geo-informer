@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -125,8 +124,8 @@ public class PositionServiceImpl implements PositionService {
      */
     @Override
     public ResponseEntity<List<Position>> findPositionsByCountry(String country) {
-        if(country != null) {
-            if(!country.equalsIgnoreCase("null")) {
+        if (country != null) {
+            if (!country.equalsIgnoreCase("null")) {
                 if (country.length() == 2) {
                     logger.info(LoggerMessage.SOURCE_DATABASE.getText());
                     List<Position> positions = positionRepository.findByCountryOrderByNameAsc(country);
@@ -173,7 +172,7 @@ public class PositionServiceImpl implements PositionService {
         if (name != null) {
             if (!name.equals("NULL")) {
                 position = positionRepository.findFirstByNameContainingOrderByName(name);
-                if(position != null) {
+                if (position != null) {
                     logger.info(LoggerMessage.SOURCE_DATABASE.getText() + "\n" + position.toString());
                     logger.info(LoggerMessage.SOURCE_DATABASE.getText() + LoggerMessage.STATUS_SUCCESS.getText());
                     return new ResponseEntity<>(position, HttpStatus.OK); // 200
@@ -184,7 +183,7 @@ public class PositionServiceImpl implements PositionService {
                 }
             } else {
                 position = positionRepository.findFirstByNameIsNull();
-                if(position != null) {
+                if (position != null) {
                     logger.info(LoggerMessage.SOURCE_DATABASE.getText() + "\n" + position.toString());
                     logger.info(LoggerMessage.SOURCE_DATABASE.getText() + LoggerMessage.STATUS_SUCCESS.getText());
                     return new ResponseEntity<>(position, HttpStatus.OK); // 200
@@ -196,7 +195,7 @@ public class PositionServiceImpl implements PositionService {
             }
         } else {
             position = positionRepository.findFirstByNameIsNull();
-            if(position != null) {
+            if (position != null) {
                 logger.info(LoggerMessage.SOURCE_DATABASE.getText() + "\n" + position.toString());
                 logger.info(LoggerMessage.SOURCE_DATABASE.getText() + LoggerMessage.STATUS_SUCCESS.getText());
                 return new ResponseEntity<>(position, HttpStatus.OK); // 200

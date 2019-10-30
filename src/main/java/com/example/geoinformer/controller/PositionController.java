@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -82,10 +83,11 @@ public class PositionController {
     }
 
     /**
-     * Метод, обновляющий информацию по всем местам в БД
+     * Метод, обновляющий каждый день в полночь информацию по всем местам в БД
      *
      * @return состояние HTTP
      */
+    @Scheduled(cron = "0 0 0 * * ?", zone = "Europe/Minsk")
     @PostMapping("/pos-update")
     public ResponseEntity<?> refreshPositions() {
         return positionService.refreshAllPositions();

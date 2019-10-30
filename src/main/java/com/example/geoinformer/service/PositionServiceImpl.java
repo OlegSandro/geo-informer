@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -125,8 +126,7 @@ public class PositionServiceImpl implements PositionService {
     @Override
     public ResponseEntity<List<Position>> findPositionsByCountry(String country) {
         if(country != null) {
-            country = country.toLowerCase();
-            if(!country.equals("null")) {
+            if(!country.equalsIgnoreCase("null")) {
                 if (country.length() == 2) {
                     logger.info(LoggerMessage.SOURCE_DATABASE.getText());
                     List<Position> positions = positionRepository.findByCountryOrderByNameAsc(country);
